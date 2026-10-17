@@ -1,0 +1,26 @@
+id,name,father_name,phone,roll_no,course,semester,email,password,high_priority_topics,low_priority_topics
+S1001,Rohan Kumar,Suresh Kumar,9811100001,2201001,B.Tech CSE,5,rohan@student.edu,pass123,Frontend Development,Backend Development
+S1002,Simran Kaur,Gurpreet Singh,9811100002,2201002,B.Tech CSE (AI),6,simran@student.edu,pass123,Frontend Development,Backend Development
+S1003,Aditya Rawat,Mahesh Rawat,9811100003,2201003,B.Tech IT,4,aditya@student.edu,pass123,,
+S1004,Ananya Sharma,Rakesh Sharma,9811100004,2201004,B.Tech CSE,5,ananya@student.edu,pass123,Full Stack Development|Game Development,Artificial Intelligence
+S1005,Karan Mehta,Vinod Mehta,9811100005,2201005,B.Tech CSE (Cyber Security),6,karan@student.edu,pass123,,
+S1006,Priya Nair,Suresh Nair,9811100006,2201006,B.Tech IT,4,priya@student.edu,pass123,,
+S1007,Arjun Verma,Dinesh Verma,9811100007,2201007,B.Tech ECE,6,arjun@student.edu,pass123,,
+S1008,Neha Gupta,Anil Gupta,9811100008,2201008,B.Tech CSE (Data Science),5,neha@student.edu,pass123,Frontend Development,Backend Development
+S1009,Vikram Singh,Harpal Singh,9811100009,2201009,B.Tech CSE,7,vikram@student.edu,pass123,,
+S1010,Pooja Joshi,Mukesh Joshi,9811100010,2201010,B.Tech IT,4,pooja@student.edu,pass123,,
+S1011,Rahul Yadav,Ramesh Yadav,9811100011,2201011,B.Tech CSE,3,rahul@student.edu,pass123,,
+S1012,Sneha Patel,Kirit Patel,9811100012,2201012,B.Tech CSE (AI),5,sneha@student.edu,pass123,,
+S1013,Mohit Chauhan,Ajay Chauhan,9811100013,2201013,B.Tech CSE,6,mohit@student.edu,pass123,,
+S1014,Divya Bisht,Jagdish Bisht,9811100014,2201014,B.Tech IT,4,divya@student.edu,pass123,,
+S1015,Harsh Tiwari,Ashok Tiwari,9811100015,2201015,B.Tech ECE,7,harsh@student.edu,pass123,,
+S1016,Kavya Reddy,Srinivas Reddy,9811100016,2201016,B.Tech CSE (AI),6,kavya@student.edu,pass123,,
+S1017,Nikhil Bhatt,Pankaj Bhatt,9811100017,2201017,B.Tech CSE,5,nikhil@student.edu,pass123,,
+S1018,Isha Malhotra,Rajiv Malhotra,9811100018,2201018,B.Tech IT,3,isha@student.edu,pass123,,
+S1019,Saurabh Pandey,Om Prakash Pandey,9811100019,2201019,B.Tech CSE,7,saurabh@student.edu,pass123,,
+S1020,Tanvi Saxena,Alok Saxena,9811100020,2201020,B.Tech CSE (Data Science),4,tanvi@student.edu,pass123,,
+S1021,Manish Rana,Bhupender Rana,9811100021,2201021,B.Tech ECE,5,manish@student.edu,pass123,,
+S1022,Riya Kapoor,Sanjay Kapoor,9811100022,2201022,B.Tech CSE,6,riya@student.edu,pass123,,
+S1023,Deepak Negi,Hukum Singh Negi,9811100023,2201023,B.Tech IT,3,deepak@student.edu,pass123,,
+S1024,Aarav Khanna,Naveen Khanna,9811100024,2201024,B.Tech CSE (Cyber Security),5,aarav@student.edu,pass123,,
+S1025,Megha Thakur,Pradeep Thakur,9811100025,2201025,B.Tech CSE,4,megha@student.edu,pass123,,
