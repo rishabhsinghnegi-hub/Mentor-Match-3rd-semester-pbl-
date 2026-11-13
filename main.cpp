@@ -1,9 +1,8 @@
-//this is Mentor match Main file
-
 #include "utils.h"
 #include "core.h"
 #include "student.h"
 #include "staff.h"
+#include "matching.h"
 
 int main() {
     system("");
@@ -33,9 +32,11 @@ int main() {
         menuItem("1", "Login as Student");
         menuItem("2", "Login as Teacher");
         menuItem("3", "Login as Administrator");
+        menuItem("4", "Student Registration");
+        menuItem("5", "Teacher Registration");
         menuItem("0", "Exit");
 
-        int c = getNumber("Enter your choice: ", 0, 3);
+        int c = getNumber("Enter your choice: ", 0, 5);
 
         if (c == 0) {
             cout << "\n " << BOLD << CYAN
@@ -45,13 +46,14 @@ int main() {
         }
 
         if (c == 1)
-            login(students, "STUDENT LOGIN", "Student ID: ",
-                  true, "students.csv");
+            login(students, "STUDENT LOGIN", "Student ID: ", true, "students.csv");
         else if (c == 2)
-            login(teachers, "TEACHER LOGIN", "Teacher ID: ",
-                  true, "teachers.csv");
-        else
-            login(admins, "ADMINISTRATOR LOGIN", "Admin ID: ",
-                  false, "admins.csv");
+            login(teachers, "TEACHER LOGIN", "Teacher ID: ", true, "teachers.csv");
+        else if (c == 3)
+            login(admins, "ADMINISTRATOR LOGIN", "Admin ID: ", false, "admins.csv");
+        else if (c == 4)
+            registerStudent();
+        else if (c == 5)
+            registerTeacher();
     }
 }

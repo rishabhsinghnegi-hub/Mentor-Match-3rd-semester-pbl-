@@ -17,6 +17,10 @@ public:
 };
 
 vector<Student> students;
+void showMentorMatches(const Student& student);
+void findMentors(Student& student);
+
+void findMentors(Student& student);
 
 void Student::save(int changed) {
     saveTable(
@@ -174,15 +178,18 @@ void Student::dashboard() {
         menuItem("1", "Choose Topics");
         menuItem("2", "Update My Topics");
         menuItem("3", "Show My Topics");
+        menuItem("4", "Find My Mentor");
         menuItem("0", "Logout");
 
-        int c = getNumber("Choose an option: ", 0, 3);
+        int c = getNumber("Choose an option: ", 0, 4);
 
         if (c == 0)
             return;
 
         if (c == 2)
             updateTopics();
+        else if (c == 4)
+            findMentors(*this);
         else
             topicScreen(c == 1);
     }
@@ -194,4 +201,77 @@ void loadStudents() {
             students.push_back(Student(f));
             addTopicsFrom(students.back(), f, 9);
         }
+}
+
+void registerStudent() {
+    clearScreen();
+    printTitle("STUDENT REGISTRATION");
+
+    vector<string> f(11);
+
+    while (true) {
+        f[0] = toUpper(getCsvSafeText("Student ID (e.g. S1001): "));
+
+        if (f[0].size() < 2 || f[0][0] != 'S') {
+            showError("Student ID must begin with S.");
+            continue;
+        }
+
+        bool exists = false;
+
+        for (const Student& s : students) {
+            if (s.getId() == f[0]) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+            break;
+
+        showError("This Student ID already exists.");
+    }
+
+    f[1] = getCsvSafeText("Full Name: ");
+    f[2] = getCsvSafeText("Father's Name: ");
+    f[3] = getCsvSafeText("Phone Number: ");
+    f[4] = getCsvSafeText("Roll Number: ");
+    f[5] = getCsvSafeText("Course: ");
+    f[6] = getCsvSafeText("Semester: ");
+    f[7] = getCsvSafeText("Email ID: ");
+    f[8] = getCsvSafeText("Create Password: ");
+
+    f[9] = "";
+    f[10] = "";
+
+    Student newStudent(f);
+
+    if (!appendCsvRow(
+        "students.csv",
+        "id,name,father_name,phone,roll_no,course,semester,email,password,high_priority_topics,low_priority_topics",
+        newStudent.csvRow()
+    )) {
+        pauseScreen();
+        return;
+    }
+
+    students.push_back(newStudent);
+
+    showSuccess("Student registration completed successfully.");
+    cout << "\n Your Student ID: " << f[0] << "\n";
+    pauseScreen();
+}
+
+void findMentors(Student& student) {
+    clearScreen();
+    printTitle("FIND MY MENTOR");
+
+    if (student.highList().empty() && student.lowList().empty()) {
+        showNote("Please select your topics before finding a mentor.");
+        pauseScreen();
+        return;
+    }
+
+    showMentorMatches(student);
+    pauseScreen();
 }
