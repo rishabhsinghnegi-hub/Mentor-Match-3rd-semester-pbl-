@@ -22,11 +22,171 @@ public:
     Admin(string i, string n, string p)
         : User(i, n, p) {}
 
-    void dashboard() override {}
+    void dashboard() override;
 };
 
 vector<Teacher> teachers;
 vector<Admin> admins;
+
+template <class T>
+void viewDirectory(vector<T>& users, string title) {
+
+    while (true) {
+
+        clearScreen();
+        printTitle(title);
+
+        
+        if (users.empty()) {
+            showNote("No records found.");
+            pauseScreen();
+            return;
+        }
+
+        
+        for (int i = 0; i < users.size(); i++) {
+
+            cout << "\n "
+                 << i + 1 << ". "
+                 << users[i].getName()
+                 << " (" << users[i].getId() << ")";
+        }
+
+        cout << "\n\n";
+
+        menuItem("0", "Back");
+
+        int count = static_cast<int>(users.size());
+
+        int choice = getNumber(
+            "Enter record number to view profile: ",
+            0,
+            count
+        );
+
+        
+        if (choice == 0)
+            return;
+
+        
+        clearScreen();
+
+        users[choice - 1].showProfile();
+
+        pauseScreen();
+    }
+}
+
+
+
+void viewTopicDirectory() {
+
+    clearScreen();
+
+    printTitle("AVAILABLE TOPICS");
+
+    if (allTopics.empty()) {
+        showNote("No topics available.");
+    }
+    else {
+        for (int i = 0; i < allTopics.size(); i++) {
+
+            cout << "\n "
+                 << i + 1 << ". "
+                 << allTopics[i];
+        }
+    }
+
+    cout << "\n";
+
+    pauseScreen();
+}
+
+
+
+void showSystemOverview() {
+
+    clearScreen();
+
+    printTitle("SYSTEM OVERVIEW");
+
+    showField("Total Students", to_string(students.size()));
+
+    showField("Total Teachers", to_string(teachers.size()));
+
+    showField("Total Admins", to_string(admins.size()));
+
+    showField("Available Topics", to_string(allTopics.size()));
+
+    cout << "\n";
+
+    pauseScreen();
+}
+
+void Admin::dashboard() {
+
+    while (true) {
+
+        clearScreen();
+
+        printTitle("ADMIN DASHBOARD");
+
+        cout << "\n Welcome, "
+             << BOLD << YELLOW
+             << name
+             << RESET << "\n\n";
+
+        menuItem("1", "View Student Directory");
+
+        menuItem("2", "View Teacher Directory");
+
+        menuItem("3", "View Available Topics");
+
+        menuItem("4", "System Overview");
+
+        menuItem("0", "Logout");
+
+
+        int choice = getNumber(
+            "Choose an option: ",
+            0,
+            4
+        );
+
+
+        if (choice == 0) {
+            showNote("Logging out...");
+            pauseScreen();
+            return;
+        }
+
+        else if (choice == 1) {
+
+            viewDirectory(
+                students,
+                "STUDENT DIRECTORY"
+            );
+        }
+
+        else if (choice == 2) {
+
+            viewDirectory(
+                teachers,
+                "TEACHER DIRECTORY"
+            );
+        }
+
+        else if (choice == 3) {
+
+            viewTopicDirectory();
+        }
+
+        else if (choice == 4) {
+
+            showSystemOverview();
+        }
+    }
+}
 
 void Teacher::save(int changed) {
     saveTable(
