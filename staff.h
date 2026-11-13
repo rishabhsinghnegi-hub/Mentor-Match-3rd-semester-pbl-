@@ -247,6 +247,65 @@ void loadTeachers() {
         }
 }
 
+void registerTeacher() {
+    clearScreen();
+    printTitle("TEACHER REGISTRATION");
+
+    vector<string> f(8);
+
+    // Get and validate Teacher ID
+    while (true) {
+        f[0] = toUpper(getCsvSafeText("Teacher ID (e.g. T017): "));
+
+        if (f[0].size() < 2 || f[0][0] != 'T') {
+            showError("Teacher ID must begin with T.");
+            continue;
+        }
+
+        bool exists = false;
+
+        for (const Teacher& t : teachers) {
+            if (t.getId() == f[0]) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+            break;
+
+        showError("This Teacher ID already exists.");
+    }
+
+    f[1] = getCsvSafeText("Full Name: ");
+    f[2] = getCsvSafeText("Phone Number: ");
+    f[3] = getCsvSafeText("Department: ");
+    f[4] = getCsvSafeText("Email ID: ");
+    f[5] = getCsvSafeText("Create Password: ");
+
+    
+    f[6] = "";
+    f[7] = "";
+
+    Teacher newTeacher(f);
+
+    if (!appendCsvRow(
+        "teachers.csv",
+        "id,name,phone,department,email,password,primary_expertise_topics,secondary_expertise_topics",
+        newTeacher.csvRow()
+    )) {
+        pauseScreen();
+        return;
+    }
+
+    teachers.push_back(newTeacher);
+
+    showSuccess("Teacher registration completed successfully.");
+    cout << "\n Your Teacher ID: " << f[0] << "\n";
+    pauseScreen();
+}
+
+
 void loadAdmins() {
     for (auto& f : readCsv("admins.csv"))
         if (f.size() > 4)

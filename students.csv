@@ -1,5 +1,5 @@
 id,name,father_name,phone,roll_no,course,semester,email,password,high_priority_topics,low_priority_topics
-S1001,Rohan Kumar,Suresh Kumar,9811100001,2201001,B.Tech CSE,5,rohan@student.edu,pass123,Frontend Development,Backend Development
+S1001,Rohan Kumar,Suresh Kumar,9811100001,2201001,B.Tech CSE,5,rohan@student.edu,pass123,Embedded Systems & Firmware|Frontend Development,Backend Development
 S1002,Simran Kaur,Gurpreet Singh,9811100002,2201002,B.Tech CSE (AI),6,simran@student.edu,pass123,Frontend Development,Backend Development
 S1003,Aditya Rawat,Mahesh Rawat,9811100003,2201003,B.Tech IT,4,aditya@student.edu,pass123,,
 S1004,Ananya Sharma,Rakesh Sharma,9811100004,2201004,B.Tech CSE,5,ananya@student.edu,pass123,Full Stack Development|Game Development,Artificial Intelligence
@@ -24,3 +24,4 @@ S1022,Riya Kapoor,Sanjay Kapoor,9811100022,2201022,B.Tech CSE,6,riya@student.edu
 S1023,Deepak Negi,Hukum Singh Negi,9811100023,2201023,B.Tech IT,3,deepak@student.edu,pass123,,
 S1024,Aarav Khanna,Naveen Khanna,9811100024,2201024,B.Tech CSE (Cyber Security),5,aarav@student.edu,pass123,,
 S1025,Megha Thakur,Pradeep Thakur,9811100025,2201025,B.Tech CSE,4,megha@student.edu,pass123,DevOps / Platform Engineering|Full Stack Development,IoT|System Programming & OS
+S1026,Himanshu,Rishabh Singh,23456789,1234,Btech,3rd,weqrtyh@gmail.com,pass12345,,

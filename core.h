@@ -100,25 +100,32 @@ public:
 };
 
 template <class T>
-void saveTable(const string& file, const string& header,
+bool saveTable(const string& file, const string& header,
                const vector<T>& list, int changed) {
-    if (changed == 0) {
-        showNote("No topics were changed.");
-        return;
-    }
+    if (changed == 0)
+        return true;
 
     ofstream out(file);
+
     if (!out) {
         showError("Could not save to " + file);
-        return;
+        return false;
     }
 
     out << header << "\n";
+
     for (const T& x : list)
         out << x.csvRow() << "\n";
 
-    showSuccess(to_string(changed) +
-                " topic(s) changed. Saved to " + file);
+    out.flush();
+
+    if (!out) {
+        showError("Error occurred while writing to " + file);
+        return false;
+    }
+
+    showSuccess(to_string(changed) + " record(s) saved to " + file);
+    return true;
 }
 
 template <class T>

@@ -149,6 +149,51 @@ string getText(string prompt) {
     }
 }
 
+string getCsvSafeText(string prompt) {
+    while (true) {
+        string value = getText(prompt);
+
+        if (value.find(',') == string::npos)
+            return value;
+
+        showError("Commas are not allowed in this field.");
+    }
+}
+
+bool appendCsvRow(const string& file,
+                  const string& header,
+                  const string& row) {
+
+    ifstream check(file);
+    bool needsHeader = !check.good();
+
+    if (check.good()) {
+        check.seekg(0, ios::end);
+        needsHeader = (check.tellg() == 0);
+    }
+
+    check.close();
+
+    ofstream out(file, ios::app);
+
+    if (!out) {
+        showError("Could not open " + file + " for writing.");
+        return false;
+    }
+
+    if (needsHeader)
+        out << header << "\n";
+
+    out << row << "\n";
+
+    if (!out) {
+        showError("Failed to write registration data.");
+        return false;
+    }
+
+    return true;
+}
+
 vector<int> readNumbers(int maxNumber) {
     cout << "\n " << CYAN
          << "Enter numbers separated by spaces (e.g. 1 4 7), or ENTER to skip: "
