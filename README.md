@@ -1,52 +1,63 @@
+﻿# Mentor Match
 
-# MentorMatch
+A console based C++ application for student and teacher registration, topic preferences, mentor recommendations, and administrator directories. It is a project based learning example for data structures, file handling, and object oriented programming.
 
-A C++-based mentor matching system that manages students, teachers, administrators, and topic preferences using CSV file handling.
+## Project layout
 
-## Features
+```text
+mentormatch/
+├── database/                 # CSV records read and updated by the application
+│   ├── admins.csv
+│   ├── ratings.csv           # Reserved; rating functionality is not implemented yet
+│   ├── students.csv
+│   ├── teachers.csv
+│   └── topics.csv
+├── docs/
+│   ├── function-and-oop-guide.txt
+│   └── project-flow.txt
+├── include/                  # Declarations and implementation shared by the program
+│   ├── core.h
+│   ├── matching.h
+│   ├── staff.h
+│   ├── student.h
+│   └── utils.h
+├── src/
+│   └── main.cpp
+└── README.md
+```
 
-- Student records and profiles
-- Teacher profiles and expertise topics
-- Administrator records
-- Topic selection and priority management
-- CSV-based data storage
-- Console-based menu interface
+Run the executable from the repository root. The program uses paths such as `database/students.csv` relative to the current working directory.
 
-## Technologies Used
+## Build and run
 
-- C++
-- Object-Oriented Programming
-- File Handling
-- CSV
-- Git and GitHub
-
-## Project Structure
-
-- `main.cpp` — Program entry point
-- `utils.h` — Utility functions and console formatting
-- `core.h` — Core classes and shared functionality
-- `student.h` — Student functionality
-- `staff.h` — Teacher and administrator functionality
-- `students.csv` — Student records
-- `teachers.csv` — Teacher records
-- `admins.csv` — Administrator records
-- `topics.csv` — Available topics
-
-## How to Run
-
-Compile the program using a C++ compiler such as g++:
+Requires a C++11-compatible compiler. From the repository root:
 
 ```bash
-g++ main.cpp -o main.exe
+g++ -std=c++11 -Wall -Wextra -pedantic -Iinclude src/main.cpp -o mentormatch
+./mentormatch
 ```
 
-Run it on Windows:
+On Windows with MinGW:
 
 ```powershell
-.\main.exe
+g++ -std=c++11 -Wall -Wextra -pedantic -Iinclude src/main.cpp -o mentormatch.exe
+.\mentormatch.exe
 ```
 
-## Note
+The CSV files include sample records and are the application's local storage. Keep a backup before editing records manually. Passwords are stored as plain text, so use only sample credentials and do not use this design for real accounts.
 
-The CSV files are intended for sample project data. Do not use plain-text passwords or real personal information in a production system.
-git status
+## Current capabilities
+
+- Student and teacher registration and login
+- Student topic selection and preference updates
+- Teacher expertise selection and updates
+- Mentor ranking from shared topics, with the top three results shown
+- Administrator views for student/teacher profiles, topics, and system counts
+- CSV loading, registration append, and updates to selected topic columns
+
+`ratings.csv` is currently empty and is not read or written by the program. There is no rating feature in the current code.
+
+## Learning guides
+
+- [Function, data structure, and OOP guide](docs/function-and-oop-guide.txt) describes the current functions and concepts by file.
+- [Project flow and architecture](docs/project-flow.txt) follows each menu option and gives an example of mentor scoring.

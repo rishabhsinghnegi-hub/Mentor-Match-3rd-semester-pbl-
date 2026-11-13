@@ -1,0 +1,92 @@
+﻿MENTOR MATCH - PROJECT FLOW AND ARCHITECTURE
+============================================
+
+1. HOW THE FILES CONNECT
+------------------------
+src/main.cpp is the only translation unit and includes the headers in this order:
+
+  utils.h -> core.h -> student.h -> staff.h -> matching.h
+
+utils.h supplies input, display, and CSV helper functions. core.h defines shared User and TopicUser classes and templates. student.h builds Student behavior on TopicUser and declares the student collection. staff.h defines Teacher and Admin and their collections/dashboards. matching.h implements the recommendation display using Student and Teacher data.
+
+The database folder holds CSV persistence. At startup, the program reads the topic list and user tables into vectors. Topic preferences are restored into sets. Registration appends a row. Topic edits rewrite the corresponding CSV using saveTable. The running program works on in-memory objects after loading, then persists changes when requested.
+
+All CSV paths are relative to the current working directory. Start the app from the repository root so database/*.csv resolves correctly.
+
+2. STARTUP AND MAIN MENU
+------------------------
+main() configures the console, checks database/students.csv, then calls:
+  loadTopics()    -> database/topics.csv -> allTopics
+  loadStudents()  -> database/students.csv -> students
+  loadTeachers()  -> database/teachers.csv -> teachers
+  loadAdmins()    -> database/admins.csv -> admins
+
+If topics.csv yields no topics, the app reports the problem and exits. Otherwise it loops through the main menu:
+  1 Student login       -> login(students, ...) -> Student::dashboard()
+  2 Teacher login       -> login(teachers, ...) -> Teacher::dashboard()
+  3 Administrator login -> login(admins, ...) -> Admin::dashboard()
+  4 Student registration -> registerStudent()
+  5 Teacher registration -> registerTeacher()
+  0 Exit
+
+login<T>() makes up to three attempts. It uses the shared User interface to compare credentials; on success it calls dashboard(). This is runtime polymorphism: the object determines which dashboard implementation runs.
+
+3. STUDENT OPTIONS
+------------------
+After login, Student::dashboard() shows the student profile, then repeats its menu:
+  1 Choose Topics
+     -> topicScreen(true) -> pickTopics(2), then pickTopics(1)
+     -> addTopic() places each chosen topic in the high or low unordered_set
+     -> save() -> saveTable<Student>() -> rewrite database/students.csv
+  2 Update My Topics
+     -> updateTopics() loops over add/change high, add/change low, remove, or back
+     -> pickTopics() or removeTopics() changes the sets; save() persists changes
+  3 Show My Topics
+     -> topicScreen(false) -> showMyTopics()
+  4 Find My Mentor
+     -> findMentors(*this) verifies at least one preference exists
+     -> showMentorMatches(*this)
+  0 Logout
+
+Example topic state: a student marks C++ as high priority and Databases as low priority. The student dashboard passes that same Student object to findMentors; its inherited highList()/lowList() provide sorted topic names.
+
+4. TEACHER OPTIONS
+------------------
+Teacher::dashboard() displays the teacher profile and offers:
+  1 Choose Topics -> topicScreen(true) -> pick primary and secondary expertise -> save
+  2 Update My Topics -> updateTopics() -> add/change/remove -> save
+  3 Show My Topics -> topicScreen(false) -> showMyTopics()
+  0 Logout
+
+The teacher's primary expertise is the high-priority set; secondary expertise is the low-priority set. Teacher::save() rewrites database/teachers.csv.
+
+5. ADMIN OPTIONS
+----------------
+Admin::dashboard() offers:
+  1 View Student Directory -> viewDirectory(students, ...) -> selected Student::showProfile()
+  2 View Teacher Directory -> viewDirectory(teachers, ...) -> selected Teacher::showProfile()
+  3 View Available Topics -> viewTopicDirectory() reads in-memory allTopics
+  4 System Overview -> showSystemOverview() reports vector/topic counts
+  0 Logout
+
+viewDirectory<T>() is a function template shared by both directories. Profile display is class-specific.
+
+6. HOW MENTOR SCORES ARE RANKED
+-------------------------------
+For every teacher, showMentorMatches() compares the student's selected topics against the teacher's expertise sets:
+  student high + teacher primary   = 4 points
+  student high + teacher secondary = 2 points
+  student low  + teacher primary   = 2 points
+  student low  + teacher secondary = 1 point
+  no overlap                       = 0 points
+
+For example, if the student marks C++ high and Databases low, and a teacher lists C++ as primary and Databases as secondary, the score is 4 + 1 = 5. Only teachers with a positive score enter the priority_queue. Its comparator puts the highest score first and breaks score ties by teacher name. The screen displays at most three teachers, along with each matched topic's points.
+
+7. DATA FLOW AND LIMITS
+-----------------------
+- Loading: readCsv() skips CSV headers and creates vectors of string fields. load* functions convert rows into class objects.
+- Topic restoration: addTopicsFrom() reads topic columns separated by | and invokes addTopic().
+- Registration: getCsvSafeText() prevents commas; appendCsvRow() creates a header if needed and appends the serialized record.
+- Topic updates: csvRow() serializes one user, and saveTable() rewrites all loaded records for that user type.
+- Ratings: ratings.csv exists but has no loader, writer, menu option, or rating model yet.
+- CSV fields containing commas/quoted values are not supported. Passwords are stored as plain text; the project is for learning and sample data only.

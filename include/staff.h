@@ -44,7 +44,7 @@ void viewDirectory(vector<T>& users, string title) {
         }
 
         
-        for (int i = 0; i < users.size(); i++) {
+        for (size_t i = 0; i < users.size(); i++) {
 
             cout << "\n "
                  << i + 1 << ". "
@@ -89,7 +89,7 @@ void viewTopicDirectory() {
         showNote("No topics available.");
     }
     else {
-        for (int i = 0; i < allTopics.size(); i++) {
+        for (size_t i = 0; i < allTopics.size(); i++) {
 
             cout << "\n "
                  << i + 1 << ". "
@@ -190,7 +190,7 @@ void Admin::dashboard() {
 
 void Teacher::save(int changed) {
     saveTable(
-        "teachers.csv",
+        "database/teachers.csv",
         "id,name,phone,department,email,password,primary_expertise_topics,secondary_expertise_topics",
         teachers,
         changed
@@ -240,7 +240,7 @@ void Teacher::dashboard() {
     }
 }
 void loadTeachers() {
-    for (auto& f : readCsv("teachers.csv"))
+    for (auto& f : readCsv("database/teachers.csv"))
         if (f.size() > 5) {
             teachers.push_back(Teacher(f));
             addTopicsFrom(teachers.back(), f, 6);
@@ -290,7 +290,7 @@ void registerTeacher() {
     Teacher newTeacher(f);
 
     if (!appendCsvRow(
-        "teachers.csv",
+        "database/teachers.csv",
         "id,name,phone,department,email,password,primary_expertise_topics,secondary_expertise_topics",
         newTeacher.csvRow()
     )) {
@@ -307,7 +307,7 @@ void registerTeacher() {
 
 
 void loadAdmins() {
-    for (auto& f : readCsv("admins.csv"))
+    for (auto& f : readCsv("database/admins.csv"))
         if (f.size() > 4)
             admins.push_back(Admin(f[0], f[1], f[4]));
 }

@@ -5,7 +5,7 @@
 vector<string> allTopics;
 
 void loadTopics() {
-    for (auto& f : readCsv("topics.csv"))
+    for (auto& f : readCsv("database/topics.csv"))
         if (f[0] != "")
             allTopics.push_back(f[0]);
 }

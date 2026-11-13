@@ -1,0 +1,112 @@
+﻿MENTOR MATCH - FUNCTION, DATA STRUCTURE, AND OOP GUIDE
+=====================================================
+
+Scope
+-----
+This guide describes the code currently present in the repository. Functions are defined in headers and included by src/main.cpp. The project does not use a separate database engine; CSV files are its persistence layer. There is no unordered_map, linked list, graph, or rating implementation in the current source. ratings.csv is a reserved empty file.
+
+DATA STRUCTURES AND C++ CONCEPTS AT A GLANCE
+--------------------------------------------
+- vector<T>: ordered, resizable arrays hold CSV fields, rows, topics, users, menu selections, and mentor match details.
+- unordered_set<string>: stores each user's high and low priority topics, preventing duplicate topics and supporting average constant-time membership checks.
+- priority_queue<MentorMatch, vector<MentorMatch>, MentorMatchCompare>: ranks candidate teachers by score, with name as a deterministic tie-breaker.
+- pair<string,int>: stores a matched topic and its score contribution.
+- string and string arrays: hold user data, prompts, and priority labels.
+- istringstream/ofstream/ifstream: parse input and read/write CSV files.
+- Templates: saveTable, addTopicsFrom, login, and viewDirectory accept different user/list types without duplicating logic.
+- Inheritance: Student and Teacher derive from TopicUser; TopicUser derives from User. Admin derives directly from User.
+- Encapsulation: User keeps id, name, and password protected; TopicUser keeps preference sets and profile fields protected. Public methods provide controlled operations.
+- Abstraction: User is an abstract base class because dashboard() is pure virtual (= 0). It is not a special "virtual class" language feature.
+- Runtime polymorphism: User::dashboard and TopicUser::save are virtual. Student, Teacher, and Admin override dashboard(); Student and Teacher override save(). login uses a User pointer to access identity and password functions polymorphically. User has a virtual destructor.
+- Function overloading: not used in the current code. Function overriding is used as listed above. There is no multiple inheritance.
+
+FILE-BY-FILE FUNCTION AND CONCEPT GUIDE
+---------------------------------------
+
+src/main.cpp - application entry and top-level menu
+Functions:
+- main(): configures the console, checks for database/students.csv, loads topics/students/teachers/admins, rejects a missing topic list, then displays the main menu. Routes options 1-5 to login or registration and option 0 to exit.
+Data/concepts: calls vector-backed user collections and free functions from included headers. No class is defined here.
+
+include/utils.h - shared input, display, CSV helpers
+Functions:
+- readLine(): reads and trims one console line; exits on end of input.
+- toUpper(), toLower(): convert a string's characters for case-insensitive comparisons/display.
+- trimRight(): removes trailing whitespace from a string.
+- split(): separates a string by a delimiter into vector<string>.
+- join(): combines vector<string> values with a delimiter.
+- readCsv(): skips the first/header row, splits subsequent rows into vector<vector<string>>, and trims field ends.
+- clearScreen(), pauseScreen(): console control and pause for input.
+- printTitle(), showError(), showSuccess(), showNote(), menuItem(), showField(), printBanner(): console formatting and messages.
+- getNumber(): repeatedly reads a menu number within an inclusive range.
+- getText(): requires a nonempty input line.
+- getCsvSafeText(): requires nonempty text and rejects commas to protect this simple CSV format.
+- appendCsvRow(): opens/creates a CSV, writes a header when it is empty, and appends one row; returns success/failure.
+- readNumbers(): parses space-separated selections into vector<int>; ignores values outside 1..maxNumber.
+- sorted(): copies an unordered_set<string> to vector<string> and sorts it for stable display/storage.
+Data/concepts: vector, nested vector, string, streams, istringstream, sorting. Free utility functions are shared by all user classes. CSV parsing is intentionally simple and does not support quoted CSV fields.
+
+include/core.h - base classes, topic preferences, shared templates
+Global/function:
+- allTopics: vector<string> populated from the topics file.
+- loadTopics(): reads database/topics.csv through readCsv and appends nonempty topic names.
+Classes:
+- User: base class holding id, name, password. Constructor normalizes id to uppercase. getId(), getName(), checkPassword(), and nameMatches() provide access/checks. dashboard() is pure virtual. Destructor is virtual.
+- TopicUser: abstract intermediate class for users with topics. Constructor initializes User and profile info, then stores priority label words. levelText() formats a priority label. priority() checks the high/low sets. removeTopic() erases a topic from both sets. addTopic() changes a topic's priority and avoids a redundant update. highList()/lowList() return sorted vector copies. csvRow() serializes profile, password, and topic sets. save() is pure virtual. showMyTopics(), pickTopics(), removeTopics(), updateTopics(), and topicScreen() are declared here and implemented in student.h.
+- saveTable<T>(): template that writes a header and each object's csvRow() to a CSV when changed is nonzero. Reports write failures.
+- addTopicsFrom<T>(): template that reads high and low topic columns from CSV fields and adds them to an object.
+- login<T>(): template that allows three attempts; checks ID/password and, for students/teachers, name; invokes the object's dashboard after success.
+Data/concepts: User stores shared identity state; TopicUser reuses it and adds topic-specific state. vector<string> holds profile fields; unordered_set<string> high/low supports unique topic membership. Templates are instantiated with concrete classes such as Student and Teacher.
+
+include/student.h - student model, preferences, registration, matching entry
+Class and functions:
+- Student(const vector<string>&): maps CSV columns into TopicUser profile/password fields.
+- Student::save(): writes the student table using saveTable<Student> and database/students.csv.
+- TopicUser::showMyTopics(): displays sorted high and low topic lists.
+- TopicUser::pickTopics(int): lists all topics, reads selections, updates their priority, and returns the number changed.
+- TopicUser::removeTopics(): combines selected topics, removes requested entries, and saves the number removed.
+- TopicUser::updateTopics(): loops over add/change high, add/change low, remove, and back menu choices.
+- TopicUser::topicScreen(bool): either lets the user choose preferences or displays their current lists.
+- Student::showProfile(): maps profile field positions to readable labels.
+- Student::dashboard(): shows profile, then routes menu choices to choose topics, update topics, show topics, find mentor, or logout.
+- loadStudents(): reads database/students.csv, constructs Student records, and restores topic sets.
+- registerStudent(): gathers and validates a unique S-prefixed ID, collects profile/password fields, appends a CSV record, and adds the new Student to students.
+- findMentors(Student&): requires at least one selected topic, then calls showMentorMatches.
+Data/concepts: vector<Student> students stores all students. A Student "is a" TopicUser and User. override marks save() and dashboard() implementations. Topic selection lives in unordered_set<string> fields inherited from TopicUser.
+
+include/staff.h - teacher and admin models and dashboards
+Classes/functions:
+- Teacher(const vector<string>&): maps teacher CSV columns into TopicUser.
+- Teacher::save(): writes teacher records with saveTable<Teacher> to database/teachers.csv.
+- Teacher::showProfile(): displays teacher profile columns.
+- Teacher::dashboard(): shows profile and routes to choose/update/show topic screens or logout.
+- Admin(string,string,string): initializes the User base.
+- Admin::dashboard(): routes administrator choices to student directory, teacher directory, topics, overview, or logout.
+- viewDirectory<T>(): template that lists users and calls showProfile() for the selected entry. Used for Student and Teacher lists.
+- viewTopicDirectory(): displays all available topics.
+- showSystemOverview(): displays counts for students, teachers, admins, and topics.
+- loadTeachers(): reads database/teachers.csv and restores expertise topics.
+- registerTeacher(): gathers and validates a unique T-prefixed ID, appends the teacher row, and updates the in-memory list.
+- loadAdmins(): reads administrator ID, name, and password from database/admins.csv.
+Data/concepts: vector<Teacher> teachers and vector<Admin> admins store records. Teacher inherits TopicUser; Admin inherits User. Both provide dashboard() overrides. viewDirectory<T> reuses behavior through a template.
+
+include/matching.h - recommendation scoring and ranking
+Types/functions:
+- MentorMatch: record containing a pointer to a Teacher, total score, and vector<pair<string,int>> matched topics.
+- MentorMatchCompare: comparator used by priority_queue; higher score is ranked first; ties prefer alphabetically earlier teacher names.
+- showMentorMatches(const Student&): builds hash-set copies of each teacher's high/low topics, scores overlap with the student's preferences, pushes positive results into a priority queue, and displays up to three.
+Data/concepts: unordered_set<string> gives fast topic membership checks. priority_queue<MentorMatch, vector<MentorMatch>, MentorMatchCompare> keeps the current best-ranked match at the top. vector<pair<string,int>> records score explanations. The stored teacher pointer refers to an element in the global teachers vector and is used only during this display operation.
+
+CSV FILES
+---------
+- database/students.csv: student profile/password and high/low topic columns.
+- database/teachers.csv: teacher profile/password and primary/secondary expertise columns.
+- database/admins.csv: administrator records (loader uses ID, name, and password at column 5).
+- database/topics.csv: available topic names.
+- database/ratings.csv: empty and unused in the current program.
+
+MAINTENANCE NOTES
+-----------------
+- Launch from the repository root because database paths are relative to the working directory.
+- Header files contain function definitions and global vectors; the current project builds as one translation unit by including them from src/main.cpp. If the project is split across multiple .cpp files, move shared definitions to source files or mark safe header definitions inline to avoid multiple-definition linker errors.
+- CSV data uses plain text passwords and a minimal comma splitter. This is suitable only for a classroom sample, not production account storage.

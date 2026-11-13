@@ -1,0 +1,17 @@
+id,name,phone,department,email,password,primary_expertise_topics,secondary_expertise_topics
+T001,Dr. Anil Rao,9876500001,Computer Science,anil.rao@gehu.ac.in,anil@123,AI & ML|Data Science,Web Development
+T002,Dr. Meera Sen,9876500002,Information Technology,meera.sen@gehu.ac.in,meera@123,Cybersecurity,Cloud & DevOps
+T003,Dr. Rajesh Nautiyal,9876500003,Computer Science,rajesh.nautiyal@gehu.ac.in,rajesh@123,App Development|Web Development,Cloud & DevOps
+T004,Dr. Sunita Bisht,9876500004,Computer Science,sunita.bisht@gehu.ac.in,sunita@123,Data Science,AI & ML
+T005,Prof. Vikram Rawat,9876500005,Information Technology,vikram.rawat@gehu.ac.in,vikram@123,Cloud & DevOps,Cybersecurity
+T006,Dr. Pooja Semwal,9876500006,Computer Science,pooja.semwal@gehu.ac.in,pooja@123,AI & ML,App Development|Data Science
+T007,Prof. Amit Joshi,9876500007,Computer Applications,amit.joshi@gehu.ac.in,amit@123,App Development,Web Development
+T008,Dr. Neha Kandpal,9876500008,Information Technology,neha.kandpal@gehu.ac.in,neha@123,Cybersecurity|Frontend Development,AI & ML|Backend Development
+T009,Dr. Sandeep Chauhan,9876500009,Computer Science,sandeep.chauhan@gehu.ac.in,sandeep@123,Web Development,App Development|Data Science
+T010,Prof. Kavita Negi,9876500010,Computer Applications,kavita.negi@gehu.ac.in,kavita@123,AI & ML|Data Science,Cloud & DevOps
+T011,Dr. Manoj Pandey,9876500011,Computer Science,manoj.pandey@gehu.ac.in,manoj@123,App Development|Cloud & DevOps,Web Development
+T012,Dr. Ritu Aggarwal,9876500012,Information Technology,ritu.aggarwal@gehu.ac.in,ritu@123,AI & ML|Cybersecurity,Data Science
+T013,Prof. Deepak Thapliyal,9876500013,Computer Applications,deepak.thapliyal@gehu.ac.in,deepak@123,Cloud & DevOps|Web Development,Cybersecurity
+T014,Dr. Anjali Mehra,9876500014,Computer Science,anjali.mehra@gehu.ac.in,anjali@123,Data Science,AI & ML|Web Development
+T015,Prof. Harish Bhatt,9876500015,Information Technology,harish.bhatt@gehu.ac.in,harish@123,App Development,Cloud & DevOps|Cybersecurity
+T016,Dr. Shweta Dobhal,9876500016,Computer Science,shweta.dobhal@gehu.ac.in,shweta@123,AI & ML|App Development,Data Science|Web Development

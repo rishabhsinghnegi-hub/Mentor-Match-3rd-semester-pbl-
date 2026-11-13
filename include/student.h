@@ -24,7 +24,7 @@ void findMentors(Student& student);
 
 void Student::save(int changed) {
     saveTable(
-        "students.csv",
+        "database/students.csv",
         "id,name,father_name,phone,roll_no,course,semester,email,password,high_priority_topics,low_priority_topics",
         students,
         changed
@@ -196,7 +196,7 @@ void Student::dashboard() {
 }
 
 void loadStudents() {
-    for (auto& f : readCsv("students.csv"))
+    for (auto& f : readCsv("database/students.csv"))
         if (f.size() >= 9) {
             students.push_back(Student(f));
             addTopicsFrom(students.back(), f, 9);
@@ -247,7 +247,7 @@ void registerStudent() {
     Student newStudent(f);
 
     if (!appendCsvRow(
-        "students.csv",
+        "database/students.csv",
         "id,name,father_name,phone,roll_no,course,semester,email,password,high_priority_topics,low_priority_topics",
         newStudent.csvRow()
     )) {
