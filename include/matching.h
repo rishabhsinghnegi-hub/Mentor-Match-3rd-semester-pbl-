@@ -3,6 +3,9 @@
 #include "staff.h"
 #include <queue>
 
+double teacherAverageRating(const string& teacherId);
+void startProjectForTeacher(const Student& student, const Teacher& teacher);
+
 struct MentorMatch {
     const Teacher* teacher;
     int score;
@@ -80,6 +83,7 @@ void showMentorMatches(const Student& student) {
     cout << "\n Ranked mentors based on your topic preferences:\n";
 
     int rank = 1;
+    vector<const Teacher*> displayed;
 
     while (!ranking.empty() && rank <= 3) {
         MentorMatch match = ranking.top();
@@ -89,6 +93,8 @@ void showMentorMatches(const Student& student) {
 
         showField("Teacher Name", match.teacher->getName());
         showField("Teacher ID", match.teacher->getId());
+        double rating = teacherAverageRating(match.teacher->getId());
+        showField("Student Rating", rating < 0 ? "No reviews yet" : to_string(rating).substr(0, 4) + " / 5");
 
         cout << "\n " << BOLD << "Score Breakdown:" << RESET << "\n";
 
@@ -99,9 +105,14 @@ void showMentorMatches(const Student& student) {
 
         cout << "\n";
         showField("Total Matching Score", to_string(match.score));
+        displayed.push_back(match.teacher);
 
         rank++;
     }
 
     cout << "\n";
+    cout << " Select a suggested teacher to start a project team record (0 to skip):\n";
+    int selected = getNumber("Teacher rank: ", 0, static_cast<int>(displayed.size()));
+    if (selected > 0)
+        startProjectForTeacher(student, *displayed[selected - 1]);
 }

@@ -19,8 +19,7 @@ public:
 vector<Student> students;
 void showMentorMatches(const Student& student);
 void findMentors(Student& student);
-
-void findMentors(Student& student);
+void studentProjectsMenu(Student& student);
 
 void Student::save(int changed) {
     saveTable(
@@ -179,9 +178,10 @@ void Student::dashboard() {
         menuItem("2", "Update My Topics");
         menuItem("3", "Show My Topics");
         menuItem("4", "Find My Mentor");
+        menuItem("5", "My Projects, Meetings & Reviews");
         menuItem("0", "Logout");
 
-        int c = getNumber("Choose an option: ", 0, 4);
+        int c = getNumber("Choose an option: ", 0, 5);
 
         if (c == 0)
             return;
@@ -190,6 +190,8 @@ void Student::dashboard() {
             updateTopics();
         else if (c == 4)
             findMentors(*this);
+        else if (c == 5)
+            studentProjectsMenu(*this);
         else
             topicScreen(c == 1);
     }

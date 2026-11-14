@@ -3,7 +3,7 @@
 
 Scope
 -----
-This guide describes the code currently present in the repository. Functions are defined in headers and included by src/main.cpp. The project does not use a separate database engine; CSV files are its persistence layer. There is no unordered_map, linked list, graph, or rating implementation in the current source. ratings.csv is a reserved empty file.
+Functions are defined in C++ headers and included by src/main.cpp. The project uses CSV files for local persistence. The project lifecycle, meeting scheduler, and review system extend the existing OOP and data structure learning app without replacing its current menus or recommendation logic.
 
 DATA STRUCTURES AND C++ CONCEPTS AT A GLANCE
 --------------------------------------------
@@ -25,7 +25,7 @@ FILE-BY-FILE FUNCTION AND CONCEPT GUIDE
 
 src/main.cpp - application entry and top-level menu
 Functions:
-- main(): configures the console, checks for database/students.csv, loads topics/students/teachers/admins, rejects a missing topic list, then displays the main menu. Routes options 1-5 to login or registration and option 0 to exit.
+- main(): configures the console, loads topics/students/teachers/admins and project data, rejects a missing topic list, then displays the main menu. Routes options 1-5 to login or registration and option 0 to exit.
 Data/concepts: calls vector-backed user collections and free functions from included headers. No class is defined here.
 
 include/utils.h - shared input, display, CSV helpers
@@ -56,6 +56,7 @@ Classes:
 - saveTable<T>(): template that writes a header and each object's csvRow() to a CSV when changed is nonzero. Reports write failures.
 - addTopicsFrom<T>(): template that reads high and low topic columns from CSV fields and adds them to an object.
 - login<T>(): template that allows three attempts; checks ID/password and, for students/teachers, name; invokes the object's dashboard after success.
+- currentDateIso(), addMonthsIso(): date helpers for current-date confirmation and project window calculations. addDaysIso() advances the meeting schedule in project.h.
 Data/concepts: User stores shared identity state; TopicUser reuses it and adds topic-specific state. vector<string> holds profile fields; unordered_set<string> high/low supports unique topic membership. Templates are instantiated with concrete classes such as Student and Teacher.
 
 include/student.h - student model, preferences, registration, matching entry
@@ -68,7 +69,7 @@ Class and functions:
 - TopicUser::updateTopics(): loops over add/change high, add/change low, remove, and back menu choices.
 - TopicUser::topicScreen(bool): either lets the user choose preferences or displays their current lists.
 - Student::showProfile(): maps profile field positions to readable labels.
-- Student::dashboard(): shows profile, then routes menu choices to choose topics, update topics, show topics, find mentor, or logout.
+- Student::dashboard(): shows profile, then routes menu choices to choose/update/show topics, find a mentor, open projects/reviews, or logout.
 - loadStudents(): reads database/students.csv, constructs Student records, and restores topic sets.
 - registerStudent(): gathers and validates a unique S-prefixed ID, collects profile/password fields, appends a CSV record, and adds the new Student to students.
 - findMentors(Student&): requires at least one selected topic, then calls showMentorMatches.
@@ -79,7 +80,7 @@ Classes/functions:
 - Teacher(const vector<string>&): maps teacher CSV columns into TopicUser.
 - Teacher::save(): writes teacher records with saveTable<Teacher> to database/teachers.csv.
 - Teacher::showProfile(): displays teacher profile columns.
-- Teacher::dashboard(): shows profile and routes to choose/update/show topic screens or logout.
+- Teacher::dashboard(): shows profile and routes to choose/update/show topic screens, shared project/meeting records, or logout.
 - Admin(string,string,string): initializes the User base.
 - Admin::dashboard(): routes administrator choices to student directory, teacher directory, topics, overview, or logout.
 - viewDirectory<T>(): template that lists users and calls showProfile() for the selected entry. Used for Student and Teacher lists.
@@ -97,13 +98,26 @@ Types/functions:
 - showMentorMatches(const Student&): builds hash-set copies of each teacher's high/low topics, scores overlap with the student's preferences, pushes positive results into a priority queue, and displays up to three.
 Data/concepts: unordered_set<string> gives fast topic membership checks. priority_queue<MentorMatch, vector<MentorMatch>, MentorMatchCompare> keeps the current best-ranked match at the top. vector<pair<string,int>> records score explanations. The stored teacher pointer refers to an element in the global teachers vector and is used only during this display operation.
 
+include/project.h - project lifecycle, appointments, and reviews
+Types/functions:
+- ProjectRecord, AppointmentRecord, ReviewRecord: distinct C++ record types with stable IDs and links by teacher, student, and project ID.
+- loadProjectData(): loads projects.csv, appointments.csv, and ratings.csv when the app starts.
+- startProjectForTeacher(): records registered team member IDs/names, count, course, semester, project, and guidance reason, then schedules six meetings.
+- chooseMeetingDate()/activeBookings(): offer upcoming weekdays and enforce six bookings per teacher/date; each new project schedules six meetings a week apart.
+- studentProjectsMenu(): lets each listed team member view projects, mark completion, and submit one eligible 1–5 star rating per project.
+- teacherProjectsMenu(): displays team/project details, appointment dates, status, and submitted reviews to the selected teacher.
+- teacherAverageRating(): calculates an average for display in mentor suggestions only.
+Data/concepts: separate record types demonstrate encapsulation/modeling; vectors hold typed records; IDs model relationships for later API or database adapters. CSV is simple persistence and does not provide cross-process booking transactions.
+
 CSV FILES
 ---------
 - database/students.csv: student profile/password and high/low topic columns.
 - database/teachers.csv: teacher profile/password and primary/secondary expertise columns.
 - database/admins.csv: administrator records (loader uses ID, name, and password at column 5).
 - database/topics.csv: available topic names.
-- database/ratings.csv: empty and unused in the current program.
+- database/projects.csv: project and team information shared with the selected teacher.
+- database/appointments.csv: weekday initial/follow-up appointment records.
+- database/ratings.csv: submitted star ratings.
 
 MAINTENANCE NOTES
 -----------------

@@ -1,0 +1,15 @@
+id,teacher_id,leader_id,team_student_ids,team_names,member_count,leader_name,semester,course,project_name,reason,start_date,status
+PDMOM01,T001,S1001,S1001,Rohan Kumar,1,Rohan Kumar,5,B.Tech CSE,AI Project Progress 1,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOM02,T001,S1002,S1002,Simran Kaur,1,Simran Kaur,6,B.Tech CSE (AI),AI Project Progress 2,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOM03,T001,S1003,S1003,Aditya Rawat,1,Aditya Rawat,4,B.Tech IT,AI Project Progress 3,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOM04,T001,S1004,S1004,Ananya Sharma,1,Ananya Sharma,5,B.Tech CSE,AI Project Progress 4,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOM05,T001,S1005,S1005,Karan Mehta,1,Karan Mehta,6,B.Tech CSE (Cyber Security),AI Project Progress 5,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOM06,T001,S1006,S1006,Priya Nair,1,Priya Nair,4,B.Tech IT,AI Project Progress 6,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOT01,T003,S1007,S1007,Arjun Verma,1,Arjun Verma,6,B.Tech ECE,Application Project Progress 1,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOT02,T003,S1008,S1008,Neha Gupta,1,Neha Gupta,5,B.Tech CSE (Data Science),Application Project Progress 2,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOT03,T003,S1009,S1009,Vikram Singh,1,Vikram Singh,7,B.Tech CSE,Application Project Progress 3,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOT04,T003,S1010,S1010,Pooja Joshi,1,Pooja Joshi,4,B.Tech IT,Application Project Progress 4,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOT05,T003,S1011,S1011,Rahul Yadav,1,Rahul Yadav,3,B.Tech CSE,Application Project Progress 5,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOT06,T003,S1012,S1012,Sneha Patel,1,Sneha Patel,5,B.Tech CSE (AI),Application Project Progress 6,Demo project for mentor progress meetings,2026-11-14,in_progress
+PDMOR01,T017,S1025,S1025|S1024,Himanshu|Aarav Khanna,2,Himanshu,4,B.Tech CSE,Campus Resource Planner,Completed demo project for rating display,2026-09-01,completed
+PDMOR02,T018,S1012,S1012|S1011,Sneha Patel|Rahul Yadav,2,Sneha Patel,5,B.Tech CSE (AI),AI Study Planner,Completed demo project for rating display,2026-09-15,completed

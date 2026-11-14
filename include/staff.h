@@ -17,6 +17,8 @@ public:
     void dashboard() override;
 };
 
+void teacherProjectsMenu(Teacher& teacher);
+
 class Admin : public User {
 public:
     Admin(string i, string n, string p)
@@ -226,15 +228,18 @@ void Teacher::dashboard() {
         menuItem("1", "Choose Topics");
         menuItem("2", "Update My Topics");
         menuItem("3", "Show My Topics");
+        menuItem("4", "Shared Student Projects & Meetings");
         menuItem("0", "Logout");
 
-        int c = getNumber("Choose an option: ", 0, 3);
+        int c = getNumber("Choose an option: ", 0, 4);
 
         if (c == 0)
             return;
 
         if (c == 2)
             updateTopics();
+        else if (c == 4)
+            teacherProjectsMenu(*this);
         else
             topicScreen(c == 1);
     }
@@ -253,7 +258,6 @@ void registerTeacher() {
 
     vector<string> f(8);
 
-    // Get and validate Teacher ID
     while (true) {
         f[0] = toUpper(getCsvSafeText("Teacher ID (e.g. T017): "));
 

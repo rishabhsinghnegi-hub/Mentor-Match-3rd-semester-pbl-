@@ -5,9 +5,9 @@
 ------------------------
 src/main.cpp is the only translation unit and includes the headers in this order:
 
-  utils.h -> core.h -> student.h -> staff.h -> matching.h
+  utils.h -> core.h -> student.h -> staff.h -> matching.h -> project.h
 
-utils.h supplies input, display, and CSV helper functions. core.h defines shared User and TopicUser classes and templates. student.h builds Student behavior on TopicUser and declares the student collection. staff.h defines Teacher and Admin and their collections/dashboards. matching.h implements the recommendation display using Student and Teacher data.
+utils.h supplies input, display, and CSV helper functions. core.h defines shared User and TopicUser classes and templates. student.h builds Student behavior on TopicUser and declares the student collection. staff.h defines Teacher and Admin and their collections/dashboards. matching.h implements recommendations. project.h defines project, appointment, and review records and their CSV-backed workflows.
 
 The database folder holds CSV persistence. At startup, the program reads the topic list and user tables into vectors. Topic preferences are restored into sets. Registration appends a row. Topic edits rewrite the corresponding CSV using saveTable. The running program works on in-memory objects after loading, then persists changes when requested.
 
@@ -20,6 +20,7 @@ main() configures the console, checks database/students.csv, then calls:
   loadStudents()  -> database/students.csv -> students
   loadTeachers()  -> database/teachers.csv -> teachers
   loadAdmins()    -> database/admins.csv -> admins
+  loadProjectData() -> projects.csv, appointments.csv, ratings.csv
 
 If topics.csv yields no topics, the app reports the problem and exits. Otherwise it loops through the main menu:
   1 Student login       -> login(students, ...) -> Student::dashboard()
@@ -45,7 +46,10 @@ After login, Student::dashboard() shows the student profile, then repeats its me
      -> topicScreen(false) -> showMyTopics()
   4 Find My Mentor
      -> findMentors(*this) verifies at least one preference exists
-     -> showMentorMatches(*this)
+     -> showMentorMatches(*this) shows score and average student rating
+     -> student can select one of the shown teachers to create a shared project/team
+  5 My Projects, Meetings & Reviews
+     -> view team project records, mark a project complete, or submit an eligible star rating
   0 Logout
 
 Example topic state: a student marks C++ as high priority and Databases as low priority. The student dashboard passes that same Student object to findMentors; its inherited highList()/lowList() provide sorted topic names.
@@ -56,6 +60,7 @@ Teacher::dashboard() displays the teacher profile and offers:
   1 Choose Topics -> topicScreen(true) -> pick primary and secondary expertise -> save
   2 Update My Topics -> updateTopics() -> add/change/remove -> save
   3 Show My Topics -> topicScreen(false) -> showMyTopics()
+  4 Shared Student Projects & Meetings -> shows each project, team, meeting dates, status, and reviews
   0 Logout
 
 The teacher's primary expertise is the high-priority set; secondary expertise is the low-priority set. Teacher::save() rewrites database/teachers.csv.
@@ -82,11 +87,28 @@ For every teacher, showMentorMatches() compares the student's selected topics ag
 
 For example, if the student marks C++ high and Databases low, and a teacher lists C++ as primary and Databases as secondary, the score is 4 + 1 = 5. Only teachers with a positive score enter the priority_queue. Its comparator puts the highest score first and breaks score ties by teacher name. The screen displays at most three teachers, along with each matched topic's points.
 
-7. DATA FLOW AND LIMITS
+7. PROJECT LIFECYCLE AND RATINGS
+--------------------------------
+After mentor recommendations, a student can select a displayed teacher. The team leader creates a project record with the team member names/count, course, semester, project name, guidance reason, and start date. No project file is submitted to the teacher. The application schedules six weekday meetings within the two-month project window: an initial meeting and five progress follow-ups. A teacher can have at most six booked appointments on a given date. Available dates are generated from upcoming weekdays and dates at capacity are omitted; follow-up dates are at least seven days after the previous meeting.
+
+The student dashboard can mark a project completed. A rating becomes available when the project is marked completed or the two-month window ends. Each listed team member can submit one 1–5 star rating per project. Teacher averages appear in recommendations but never enter the mentor matching score.
+
+New CSV contracts:
+  projects.csv: id, teacher_id, leader_id, team_student_ids, team_names, member_count, leader_name, semester, course, project_name, reason, start_date, status
+  appointments.csv: id, project_id, teacher_id, student_id, type, date, status
+  ratings.csv: id, project_id, teacher_id, student_id, rating, created_date
+
+IDs link records without embedding whole user profiles. Team members must have student accounts; every listed member can access the project and submit one rating for it. The project table is teacher-visible shared information; ratings are separate and can be exposed through their own future API resource. Student login also asks the student to enter the displayed current date.
+
+Seeded demonstration data includes teachers T017–T019 with `demo123` passwords and expertise matching the current topic catalog. T001 is fully booked on 2026-11-16 and T003 on 2026-11-17, each with six team projects and six progress sessions per project. T017 and T018 have completed sample projects with ratings so teacher averages appear in mentor suggestions.
+
+8. DATA FLOW AND LIMITS
 -----------------------
 - Loading: readCsv() skips CSV headers and creates vectors of string fields. load* functions convert rows into class objects.
 - Topic restoration: addTopicsFrom() reads topic columns separated by | and invokes addTopic().
 - Registration: getCsvSafeText() prevents commas; appendCsvRow() creates a header if needed and appends the serialized record.
 - Topic updates: csvRow() serializes one user, and saveTable() rewrites all loaded records for that user type.
-- Ratings: ratings.csv exists but has no loader, writer, menu option, or rating model yet.
+- Project lifecycle: project.h loads project, appointment, and review records at startup and appends or rewrites records as appropriate.
+- Ratings: one star rating per project/member is appended to ratings.csv. Average rating is presentation-only; matching points are unchanged.
+- CSV date and booking rules are checked by this single running process. CSV files do not provide transactions or locking, so simultaneous users in a future multi-process deployment require a database-backed booking service.
 - CSV fields containing commas/quoted values are not supported. Passwords are stored as plain text; the project is for learning and sample data only.

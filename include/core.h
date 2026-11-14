@@ -139,7 +139,7 @@ void addTopicsFrom(T& person, const vector<string>& f, size_t col) {
 
 template <class T>
 void login(vector<T>& list, string title, string idLabel,
-           bool askName, string fileName) {
+           bool askName, string fileName, bool requireToday = false) {
     if (list.empty()) {
         showError(fileName + " was not found or is empty.");
         pauseScreen();
@@ -153,11 +153,18 @@ void login(vector<T>& list, string title, string idLabel,
         string name = askName ? getText("Full name: ") : "";
         string id = toUpper(getText(idLabel));
         string pw = getText("Password: ");
+        bool dateMatches = true;
+        if (requireToday) {
+            string today = currentDateIso();
+            cout << "\n Today's date is " << today << ".";
+            dateMatches = getText("Enter today's date (YYYY-MM-DD): ") == today;
+            if (!dateMatches) showError("The date must match today's date.");
+        }
 
         for (T& item : list) {
             User* u = &item;
 
-            if (u->getId() == id &&
+            if (dateMatches && u->getId() == id &&
                 u->checkPassword(pw) &&
                 (!askName || u->nameMatches(name))) {
                 showSuccess("Login successful. Welcome, " +

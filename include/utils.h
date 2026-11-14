@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cctype>
+#include <ctime>
 using namespace std;
 
 const string RESET = "\033[0m", BOLD = "\033[1m",
@@ -37,6 +38,28 @@ string toLower(string s) {
     for (char& c : s)
         c = tolower((unsigned char)c);
     return s;
+}
+
+string currentDateIso() {
+    time_t now = time(NULL);
+    tm* local = localtime(&now);
+    char value[11];
+    strftime(value, sizeof(value), "%Y-%m-%d", local);
+    return value;
+}
+
+string addMonthsIso(const string& value, int months) {
+    int y = atoi(value.substr(0, 4).c_str());
+    int m = atoi(value.substr(5, 2).c_str()) + months;
+    int d = atoi(value.substr(8, 2).c_str());
+    while (m > 12) { y++; m -= 12; }
+    while (m < 1) { y--; m += 12; }
+    tm date = {};
+    date.tm_year = y - 1900; date.tm_mon = m - 1; date.tm_mday = d; date.tm_isdst = -1;
+    mktime(&date);
+    char result[11];
+    strftime(result, sizeof(result), "%Y-%m-%d", &date);
+    return result;
 }
 
 void trimRight(string& s) {

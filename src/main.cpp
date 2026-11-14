@@ -3,6 +3,7 @@
 #include "student.h"
 #include "staff.h"
 #include "matching.h"
+#include "project.h"
 
 int main() {
     system("");
@@ -19,6 +20,7 @@ int main() {
     loadStudents();
     loadTeachers();
     loadAdmins();
+    loadProjectData();
 
     if (allTopics.empty()) {
         showError("No topics found. Put topics.csv (with at least one topic) in the same folder.");
@@ -46,7 +48,7 @@ int main() {
         }
 
         if (c == 1)
-            login(students, "STUDENT LOGIN", "Student ID: ", true, "database/students.csv");
+            login(students, "STUDENT LOGIN", "Student ID: ", true, "database/students.csv", true);
         else if (c == 2)
             login(teachers, "TEACHER LOGIN", "Teacher ID: ", true, "database/teachers.csv");
         else if (c == 3)
