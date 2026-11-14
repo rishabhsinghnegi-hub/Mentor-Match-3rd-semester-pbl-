@@ -1,9 +1,14 @@
-#include "utils.h"
-#include "core.h"
-#include "student.h"
-#include "staff.h"
-#include "matching.h"
-#include "project.h"
+#include "../include/utils.h"
+#include "../include/core.h"
+#include "../include/student.h"
+#include "../include/staff.h"
+#include "../include/matching.h"
+#include "../include/project.h"
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
 
 int main() {
     system("");
@@ -11,7 +16,25 @@ int main() {
     system("chcp 65001 > nul");
 #endif
 
-    if (!ifstream("database/students.csv")) {
+    bool databaseFound = false;
+    ifstream currentDatabase("database/students.csv");
+    if (currentDatabase.good()) {
+        databaseFound = true;
+    } else {
+        ifstream parentDatabase("../database/students.csv");
+        if (parentDatabase.good()) {
+#ifdef _WIN32
+            if (_chdir("..") == 0) {
+#else
+            if (chdir("..") == 0) {
+#endif
+                ifstream rootDatabase("database/students.csv");
+                databaseFound = rootDatabase.good();
+            }
+        }
+    }
+
+    if (!databaseFound) {
         showError("database/students.csv was not found. Restore the database folder and run again.");
         return 1;
     }

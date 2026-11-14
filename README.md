@@ -29,7 +29,7 @@ mentormatch/
 └── README.md
 ```
 
-Run the executable from the repository root. The program uses paths such as `database/students.csv` relative to the current working directory.
+Run the executable from the repository root or from `src/`. On startup, the program detects the repository root so paths such as `database/students.csv` continue to resolve correctly.
 
 ## Build and run
 

@@ -11,7 +11,7 @@ utils.h supplies input, display, and CSV helper functions. core.h defines shared
 
 The database folder holds CSV persistence. At startup, the program reads the topic list and user tables into vectors. Topic preferences are restored into sets. Registration appends a row. Topic edits rewrite the corresponding CSV using saveTable. The running program works on in-memory objects after loading, then persists changes when requested.
 
-All CSV paths are relative to the current working directory. Start the app from the repository root so database/*.csv resolves correctly.
+At startup, the app checks for database/students.csv in the current directory and its parent. If launched from src/, it switches to the repository root so all database/*.csv paths resolve correctly.
 
 2. STARTUP AND MAIN MENU
 ------------------------
